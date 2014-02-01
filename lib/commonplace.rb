@@ -1,12 +1,18 @@
+#encoding: UTF-8
+
 require 'rubygems'
 require 'redcarpet'
+require 'find'
+require 'pathname'
 
 class Commonplace
 	attr_accessor :dir
+  attr_accessor :dir_path
 	
 	# initialize our wiki class
 	def initialize(dir)
 		@dir = dir
+    @dir_path = Pathname.new(dir)
 	end
 	
 	# checks if our directory exists
@@ -19,18 +25,55 @@ class Commonplace
 		# if the directory doesn't exist, we bail out with a nil
 		return nil unless File.directory? dir
 		
-		f = Dir.entries(dir)
-		f.delete(".")
-		f.delete("..")
-
-		return f
-	end
+		list = []
+		add_file_links(dir, list)
 		
+		list
+	end
+	
+	def add_file_links(directory, list)    
+		entries = Dir.entries(directory)
+		entries.delete_if { |e| e.start_with?('.') || e.start_with?('..')}
+		
+		list << directory if entries.count > 0
+		
+		dirs = entries.select { |e| File.directory? File.join(directory, e) }
+		files = entries.select { |e| File.file? File.join(directory, e) }
+		files.reject! {|e| !e.end_with? '.md'}
+		files.map! do |e| 
+			File.join(directory, e)
+		end
+		list.concat files
+		
+		if dirs
+			dirs.each { |sub_dir| add_file_links(File.join(directory, sub_dir), list) }
+		end
+		
+		list
+	end
+	
 	# returns an array of known pages
 	def list
 		files.map! { |filename|
-			{:title => file_to_pagename(filename), :link => filename.chomp(".md")}
+      filename_path = Pathname.new(filename)
+      filename_rel_path = filename_path.relative_path_from(dir_path)
+			if File.file? filename
+        link = filename_rel_path.to_path.chomp(".md")
+				{:dir => false, :title => file_to_pagename(filename), :link => link}
+			else
+				entry_for_directory(filename_rel_path.to_path)
+			end
 		}
+	end
+	
+	def entry_for_directory(dirname)
+		splits = dirname.split('/')
+		if dirname == "."
+			title = "Root"
+		else
+			title = splits.join(" » ")
+		end
+		{:dir => true, :top_level => false, :title => title, :link => splits.join('/')}
 	end
 	
 	# converts a pagename into the permalink form
@@ -50,21 +93,25 @@ class Commonplace
 	
 	# converts a filename into a page title
 	def file_to_pagename(filename)
-		filename.chomp(".md").gsub('_', ' ').capitalize
+		filename.split('/').last.chomp(".md").gsub('_', ' ').capitalize
 	end
 		
 	# returns a page instance for a given filename
 	def page(permalink)
-		# check if the file exists, return nil if not
 		file = dir + '/' + permalink + '.md'
-		return nil unless File.exists? file # bail out if the file doesn't exist
-		
-		# check if we can read content, return nil if not
-		content = File.new(file, :encoding => "UTF-8").read
-		return nil if content.nil?
-		
-		# return a new Page instance
-		return Page.new(content, permalink, self)
+		dir_path = dir + '/' + permalink
+		# check if this is a directory path
+		if File.directory?(dir_path)
+			return Folder.new(dir_path, self)
+		elsif File.exists? file
+			# check if we can read content, return nil if not
+			content = File.new(file, :encoding => "UTF-8").read
+			return nil if content.nil?
+			
+			# return a new Page instance
+			return Page.new(content, permalink, self)
+		end
+		nil
 	end
 
 	# create a new page and return it when done
@@ -79,6 +126,26 @@ class Commonplace
 		
 		# return the new file
 		return page(filename)
+	end
+end
+
+class Folder
+	attr_accessor :name, :content, :permalink
+
+	def initialize(path, wiki)
+		@path = path
+		splits = path.split('/')
+		@name = splits.last
+		@permalink = splits.slice(1, splits.length - 1).join('/')
+	end
+
+	def content
+		list = []
+		Dir.glob("#{@path}/*.md") do |file|
+			filename = file.split('/').last.chomp('.md')
+			list << "- <a class=\"internal\" href=\"/#{@permalink + '/' + filename}\">" + filename.gsub('_', ' ') + "</a>"
+		end
+		Redcarpet.new(list.join("\n")).to_html.to_s
 	end
 end
 
@@ -107,11 +174,12 @@ class Page
 		return content.gsub(/\[\[(.+?)\]\]/m) do
 			name = $1
 			permalink = name.downcase.gsub(' ', '_')
+			display_name = name.split('/').last
 			
 			if @wiki.page(permalink)
-				"<a class=\"internal\" href=\"/#{permalink}\">" + name + '</a>'
+				"<a class=\"internal\" href=\"/#{permalink}\">" + display_name + '</a>'
 			else 
-				"<a class=\"internal new\" href=\"/#{permalink}\">" + name + '</a>'
+				"<a class=\"internal new\" href=\"/#{permalink}\">" + display_name + '</a>'
 			end
 		end.to_s
 	end	

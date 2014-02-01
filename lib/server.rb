@@ -38,20 +38,15 @@ class CommonplaceServer < Sinatra::Base
 	end
 
 	# show everything else
-	get '/:page' do
-		show(params[:page])
-	end
-	
-	# show everything else
 	get '/:page/raw' do
 		@page = @wiki.page(params[:page])
 		@page.raw.to_s
 	end
 	
 	# edit a given page
-	get	'/p/:page/edit' do
-		@page = @wiki.page(params[:page])
-		
+	get	'/p/*/edit' do
+		page_name = params[:splat].first
+		@page = @wiki.page(page_name)
 		if @page
 			@name = "Editing " + @page.name
 			@editing = true
@@ -64,8 +59,9 @@ class CommonplaceServer < Sinatra::Base
 	end
 	
 	# accept updates to a page
-	post '/p/:page/edit' do
-		page = @wiki.save(params[:page], params[:content])
+	post '/p/*/edit' do
+		page_name = params[:splat].first
+		page = @wiki.save(page_name, params[:content])
 		redirect "/#{page.permalink}"
 	end
 
@@ -84,6 +80,12 @@ class CommonplaceServer < Sinatra::Base
 		erb :new
 	end
 	
+	# get all pages inside directories
+	get '/*' do
+		page_name = params[:splat].first
+		show(page_name)
+	end
+
 	# save the new page
 	post '/p/save' do
 		if params[:filename] && params[:filename] != ""

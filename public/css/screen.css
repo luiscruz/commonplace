@@ -2066,6 +2066,23 @@ footer a {
   margin-bottom: 1em;
   text-align: right;
 }
+
+li.directory {
+	font-size: 1.4em;
+	list-style: none;
+	margin-top: 20px;
+	text-indent: -20px;
+}
+
+li.top_directory {
+	font-size: 1.4em;
+	font-weight: bold;
+	list-style: none;
+	margin-top: 20px;
+	text-indent: -20px;
+	letter-spacing: 3px;
+}
+
 @media screen and (max-width: 480px) {
   #content {
     margin: 0;

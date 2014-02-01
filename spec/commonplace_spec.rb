@@ -35,12 +35,24 @@ describe Commonplace do
 		@w.page('test').content.should == "<p>Test file - don't change these contents.</p>\n"
 	end
 	
+	it "should return contents of a file when accessing an existing nested file" do
+		@w.page('dir1/dir2/apage').raw.should == "What a wonderful day!"
+		@w.page('dir1/dir2/apage').content.should == "<p>What a wonderful day!</p>\n"
+	end
+	
 	it "should return a Page instance when a valid page is requested" do
 		@w.page('test').class.should == Page
 	end
 	
 	it "should return valid raw content for an existing page" do
 		@w.page('test').raw.should == "Test file - don't change these contents."
+	end
+	it "should convert text with internal links to proper href links" do
+
+	end
+	
+	it "should return valid raw content for an existing nested page" do
+		@w.page('dir1/dir2/what').raw.should == "What a wonderful day!"
 	end
 	
 	it "should return a capitalized, underscore free title based on the file name" do
@@ -57,6 +69,11 @@ describe Commonplace do
 	it "should save a page correctly" do
 		@w.save('savetest', "This is a test save").class.should == Page
 		@w.page('savetest').raw.should == "This is a test save"
+	end
+	
+	it "should save a nested page correctly" do
+		@w.save('dir1/dir2/apage', "What a wonderful day!").class.should == Page
+		@w.page('dir1/dir2/apage').raw.should == "What a wonderful day!"
 	end
 	
 	it "should convert pages to files and back" do
@@ -82,7 +99,7 @@ describe CommonplaceServer do
 	def app
 		CommonplaceServer
 	end
-	
+
 	it "renders the homepage successfully" do
 		get '/'
 		last_response.should be_ok
@@ -90,6 +107,11 @@ describe CommonplaceServer do
 	
 	it "renders an existing page successfully" do
 		get '/home'
+		last_response.should be_ok
+	end
+
+	it "renders nested page routes" do
+		get '/dir1/dir2/apage'
 		last_response.should be_ok
 	end
 	
@@ -101,6 +123,11 @@ describe CommonplaceServer do
 
 	it "renders the edit page for an existing page successfully" do
 		get '/p/home/edit'
+		last_response.should be_ok
+	end
+
+	it "renders the edit page for an existing nested page successfully" do
+		get '/p/dir1/dir2/apage/edit'
 		last_response.should be_ok
 	end
 
