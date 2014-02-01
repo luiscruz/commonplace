@@ -30,7 +30,7 @@ PLATFORMS
 DEPENDENCIES
   rack
   rack-test
-  redcarpet
+  redcarpet (= 1.17.2)
   rspec
   shotgun
   sinatra (>= 1.3)
