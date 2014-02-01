@@ -3,13 +3,16 @@
 require 'rubygems'
 require 'redcarpet'
 require 'find'
+require 'pathname'
 
 class Commonplace
 	attr_accessor :dir
+  attr_accessor :dir_path
 	
 	# initialize our wiki class
 	def initialize(dir)
 		@dir = dir
+    @dir_path = Pathname.new(dir)
 	end
 	
 	# checks if our directory exists
@@ -28,7 +31,7 @@ class Commonplace
 		list
 	end
 	
-	def add_file_links(directory, list)
+	def add_file_links(directory, list)    
 		entries = Dir.entries(directory)
 		entries.delete_if { |e| e.start_with?('.') || e.start_with?('..')}
 		
@@ -52,23 +55,25 @@ class Commonplace
 	# returns an array of known pages
 	def list
 		files.map! { |filename|
+      filename_path = Pathname.new(filename)
+      filename_rel_path = filename_path.relative_path_from(dir_path)
 			if File.file? filename
-				{:dir => false, :title => file_to_pagename(filename), :link => filename.split('/').drop(1).join('/').chomp(".md")}
+        link = filename_rel_path.to_path.chomp(".md")
+				{:dir => false, :title => file_to_pagename(filename), :link => link}
 			else
-				entry_for_directory(filename)
+				entry_for_directory(filename_rel_path.to_path)
 			end
 		}
 	end
 	
 	def entry_for_directory(dirname)
 		splits = dirname.split('/')
-		if splits.count == 1
-			{:dir => true, :top_level => true, :title => "Home"}
+		if dirname == "."
+			title = "Root"
 		else
-			splits_without_root = splits.slice(1, splits.length - 1)
-			title = splits_without_root.join(" » ")
-			{:dir => true, :top_level => false, :title => title, :link => splits_without_root.join('/')}
+			title = splits.join(" » ")
 		end
+		{:dir => true, :top_level => false, :title => title, :link => splits.join('/')}
 	end
 	
 	# converts a pagename into the permalink form
