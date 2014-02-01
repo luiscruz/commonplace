@@ -73,7 +73,7 @@ class Commonplace
 		else
 			title = splits.join(" » ")
 		end
-		{:dir => true, :top_level => false, :title => title, :link => splits.join('/')}
+		{:dir => true, :title => title, :link => splits.join('/')}
 	end
 	
 	# converts a pagename into the permalink form

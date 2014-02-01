@@ -691,6 +691,8 @@ form fieldset legend {
   font-size: 20px;
   line-height: 1;
   *margin: 0 0 5px 145px;
+  /* IE6-7 */
+
   *line-height: 1.5;
   /* IE6-7 */
 
@@ -895,6 +897,8 @@ form input.disabled {
 .help-inline {
   padding-left: 5px;
   *position: relative;
+  /* IE6-7 */
+
   *top: -5px;
   /* IE6-7 */
 
@@ -1974,7 +1978,13 @@ footer a {
 }
 #content {
   margin: 4em auto;
-  max-width: 43em;
+  max-width: 58em;
+}
+li.directory {
+  font-size: 1.4em;
+  list-style: none;
+  margin-top: 20px;
+  text-indent: -20px;
 }
 #page {
   background: #fff;
@@ -2066,23 +2076,6 @@ footer a {
   margin-bottom: 1em;
   text-align: right;
 }
-
-li.directory {
-	font-size: 1.4em;
-	list-style: none;
-	margin-top: 20px;
-	text-indent: -20px;
-}
-
-li.top_directory {
-	font-size: 1.4em;
-	font-weight: bold;
-	list-style: none;
-	margin-top: 20px;
-	text-indent: -20px;
-	letter-spacing: 3px;
-}
-
 @media screen and (max-width: 480px) {
   #content {
     margin: 0;

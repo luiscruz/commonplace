@@ -5,3 +5,5 @@ gem "shotgun"
 gem 'redcarpet', '1.17.2'
 gem "rspec"
 gem "rack-test"
+gem 'therubyracer'
+gem 'less'
