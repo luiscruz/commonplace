@@ -7,14 +7,17 @@ require 'yaml'
 class CommonplaceServer < Sinatra::Base	
   # HElpers
   helpers do
-    def render_directory_list(directory_meta)
-      html_string = "<ul>"
-      html_string << "<li><a href=\"/#{directory_meta[:link]}\">#{directory_meta[:title]}</a></li>"
+    def render_directory_list(directory_meta, nested_already=false)
+      html_string = ""
+      html_string << "<li class=\"list-group-item directory\">" if nested_already
+      html_string << "<a href=\"/#{directory_meta[:link]}\">#{directory_meta[:title]}</a>"
+      html_string << "</li>" if nested_already
+      html_string << "<ul class=\"list-group\">"
       directory_meta[:files].each do |page|
         if page[:dir]
-          html_string << render_directory_list(page)
+          html_string << render_directory_list(page, true)
         else
-          html_string << "<li><a href=\"/#{page[:link]}\">#{page[:title]}</a></li>"
+          html_string << "<li class=\"list-group-item\"><a href=\"/#{page[:link]}\">#{page[:title]}</a></li>"
         end
       end
       html_string << "</ul>"
