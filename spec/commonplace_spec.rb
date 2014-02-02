@@ -16,11 +16,12 @@ describe Commonplace do
 		w.valid?.should == false
 	end
 	
-	it "returns empty array for an empty directory" do
+	it "returns directory entry with no files for an empty directory" do
 		# create a new directory
 		Dir.mkdir('spec/testdir2')
 		w = Commonplace.new('spec/testdir2')
-		w.list.should == []
+    print(w.list_pages)
+		w.list_pages[:files].should == []
 		
 		# remove directory
 		Dir.rmdir('spec/testdir2')

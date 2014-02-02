@@ -25,17 +25,15 @@ class Commonplace
 		# if the directory doesn't exist, we bail out with a nil
 		return nil unless File.directory? dir
 		
-		list = []
-		add_file_links(dir, list)
+		files_paths = get_directory_files(dir)
 		
-		list
+		files_paths
 	end
 	
-	def add_file_links(directory, list)    
+	def get_directory_files(directory)
 		entries = Dir.entries(directory)
 		entries.delete_if { |e| e.start_with?('.') || e.start_with?('..')}
 		
-		list << directory if entries.count > 0
 		
 		dirs = entries.select { |e| File.directory? File.join(directory, e) }
 		files = entries.select { |e| File.file? File.join(directory, e) }
@@ -43,30 +41,46 @@ class Commonplace
 		files.map! do |e| 
 			File.join(directory, e)
 		end
-		list.concat files
+    
+    files_paths = [directory] | files
+		
 		
 		if dirs
-			dirs.each { |sub_dir| add_file_links(File.join(directory, sub_dir), list) }
+			dirs.each do |sub_dir|
+        files_paths << get_directory_files(File.join(directory, sub_dir))
+      end
 		end
 		
-		list
+    files_paths
 	end
 	
 	# returns an array of known pages
-	def list
-		files.map! { |filename|
-      filename_path = Pathname.new(filename)
-      filename_rel_path = filename_path.relative_path_from(dir_path)
-			if File.file? filename
-        link = filename_rel_path.to_path.chomp(".md")
-				{:dir => false, :title => file_to_pagename(filename), :link => link}
-			else
-				entry_for_directory(filename_rel_path.to_path)
-			end
-		}
+	def list_pages(files_paths=nil)
+    files_paths ||= self.files    
+    
+    directory = files_paths.shift
+
+    directory_entry = entry_for_directory(directory)
+    directory_entry[:files] = files_paths.map! do |entry|
+      if entry.class == String
+        entry_path = Pathname.new(entry)
+        entry_rel_path = entry_path.relative_path_from(dir_path)
+			  if File.file? entry
+          link = entry_rel_path.to_path.chomp(".md")
+				  {:dir => false, :title => file_to_pagename(entry), :link => link}
+			  end
+      elsif entry.class == Array
+         list_pages(entry)       
+      end
+    end
+    
+    directory_entry
 	end
 	
-	def entry_for_directory(dirname)
+	def entry_for_directory(directory)
+    directory_path = Pathname.new(directory)
+    dirname = directory_path.relative_path_from(dir_path).to_path
+    
 		splits = dirname.split('/')
 		if dirname == "."
 			title = "Root"
@@ -184,3 +198,5 @@ class Page
 		end.to_s
 	end	
 end
+
+

@@ -5,6 +5,22 @@ require 'erb'
 require 'yaml'
 
 class CommonplaceServer < Sinatra::Base	
+  # HElpers
+  helpers do
+    def render_directory_list(directory_meta)
+      html_string = "<ul>"
+      html_string << "<li><a href=\"/#{directory_meta[:link]}\">#{directory_meta[:title]}</a></li>"
+      directory_meta[:files].each do |page|
+        if page[:dir]
+          html_string << render_directory_list(page)
+        else
+          html_string << "<li><a href=\"/#{page[:link]}\">#{page[:title]}</a></li>"
+        end
+      end
+      html_string << "</ul>"
+    end
+  end
+  
 	configure do 
 		config = YAML::load(File.open("config/commonplace.yml"))
 		set :sitename, config['sitename']
@@ -33,7 +49,7 @@ class CommonplaceServer < Sinatra::Base
 	# show the known page list
 	get '/list' do
 		@name = "Known pages"
-		@pages = @wiki.list
+		@pages = @wiki.list_pages
 		erb :list
 	end
 
