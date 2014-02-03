@@ -131,9 +131,18 @@ class Commonplace
 	# create a new page and return it when done
 	def save(filename, content)
 		# FIXME - if the file exists, this should bail out
-		
-		# write the contents into the file
+
+		# always strip leading / from filename
+		filename.slice!(0) if filename.start_with?( '/' )
+
+		# build full filename
 		file = dir + '/' + filename + '.md'
+		
+    # create file path recursively
+		path = Pathname.new( file ).dirname
+		FileUtils.mkdir_p path
+
+		# write the contents into the file
 		f = File.new(file, "w")
 		f.write(content)
 		f.close
