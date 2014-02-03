@@ -1,7 +1,7 @@
 #encoding: UTF-8
 
 require 'rubygems'
-require 'redcarpet'
+require 'markdown'
 require 'find'
 require 'pathname'
 
@@ -159,7 +159,7 @@ class Folder
 			filename = file.split('/').last.chomp('.md')
 			list << "- <a class=\"internal\" href=\"/#{@permalink + '/' + filename}\">" + filename.gsub('_', ' ') + "</a>"
 		end
-		Redcarpet.new(list.join("\n")).to_html.to_s
+		Markdown.new(list.join("\n")).to_html.to_s
 	end
 end
 
@@ -175,7 +175,7 @@ class Page
 	
 	# return html for markdown formatted page content
 	def content
-		return Redcarpet.new(parse_links(@content)).to_html
+		return Markdown.new(parse_links(@content)).to_html
 	end
 	
 	# return raw page content
