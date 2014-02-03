@@ -5,6 +5,9 @@ require 'redcarpet'
 require 'find'
 require 'pathname'
 
+require_relative 'page'
+require_relative 'folder'
+
 class Commonplace
 	attr_accessor :dir
   attr_accessor :dir_path
@@ -116,7 +119,7 @@ class Commonplace
 		dir_path = dir + '/' + permalink
 		# check if this is a directory path
 		if File.directory?(dir_path)
-			return Folder.new(dir_path, self)
+			return Folder.new(permalink, self, dir_path)
 		elsif File.exists? file
 			# check if we can read content, return nil if not
 			content = File.new(file, :encoding => "UTF-8").read
@@ -129,74 +132,20 @@ class Commonplace
 	end
 
 	# create a new page and return it when done
-	def save(filename, content)
+	def save(permalink, content)
 		# FIXME - if the file exists, this should bail out
 		
 		# write the contents into the file
-		file = dir + '/' + filename + '.md'
+		file = dir + '/' + permalink + '.md'
 		f = File.new(file, "w")
 		f.write(content)
 		f.close
 		
 		# return the new file
-		return page(filename)
+		return page(permalink)
 	end
 end
 
-class Folder
-	attr_accessor :name, :content, :permalink
 
-	def initialize(path, wiki)
-		@path = path
-		splits = path.split('/')
-		@name = splits.last
-		@permalink = splits.slice(1, splits.length - 1).join('/')
-	end
-
-	def content
-		list = []
-		Dir.glob("#{@path}/*.md") do |file|
-			filename = file.split('/').last.chomp('.md')
-			list << "- <a class=\"internal\" href=\"/#{@permalink + '/' + filename}\">" + filename.gsub('_', ' ') + "</a>"
-		end
-		Redcarpet.new(list.join("\n")).to_html.to_s
-	end
-end
-
-class Page
-	attr_accessor :name, :permalink
-	
-	def initialize(content, filename, wiki)
-		@content = content # the raw page content
-		@permalink = filename
-		@name = filename.gsub('_', ' ').capitalize
-		@wiki = wiki
-	end
-	
-	# return html for markdown formatted page content
-	def content
-		return Redcarpet.new(parse_links(@content)).to_html
-	end
-	
-	# return raw page content
-	def raw
-		return @content
-	end
-	
-	# looks for links in a page's content and changes them into anchor tags
-	def parse_links(content)
-		return content.gsub(/\[\[(.+?)\]\]/m) do
-			name = $1
-			permalink = name.downcase.gsub(' ', '_')
-			display_name = name.split('/').last
-			
-			if @wiki.page(permalink)
-				"<a class=\"internal\" href=\"/#{permalink}\">" + display_name + '</a>'
-			else 
-				"<a class=\"internal new\" href=\"/#{permalink}\">" + display_name + '</a>'
-			end
-		end.to_s
-	end	
-end
 
 
