@@ -1,3 +1,5 @@
+require 'redcarpet'
+
 class Folder
 	attr_accessor :name, :content, :permalink
 

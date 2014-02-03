@@ -1,26 +1,28 @@
 #encoding: UTF-8
 
 require 'rubygems'
-require 'redcarpet'
 require 'find'
 require 'pathname'
 
 require_relative 'page'
 require_relative 'folder'
+require_relative 'file_system_local'
 
 class Commonplace
 	attr_accessor :dir
   attr_accessor :dir_path
+  attr_accessor :file_system
 	
 	# initialize our wiki class
 	def initialize(dir)
 		@dir = dir
     @dir_path = Pathname.new(dir)
+    @file_system = FileSystemLocal.new(dir)
 	end
 	
 	# checks if our directory exists
 	def valid?
-		File.directory? dir
+		self.file_system != nil
 	end
 	
 	# returns a raw list of files in our wiki directory, sans . and ..
@@ -57,7 +59,7 @@ class Commonplace
     files_paths
 	end
 	
-	# returns an array of known pages
+	# returns an array of nown pages
 	def list_pages(files_paths=nil)
     files_paths ||= self.files    
     

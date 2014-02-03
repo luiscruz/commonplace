@@ -1,3 +1,5 @@
+require 'redcarpet'
+
 class Page
 	attr_accessor :name, :permalink
 	
