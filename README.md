@@ -26,6 +26,14 @@ Once you're installed, running Commonplace is trivial.
 * Run `shotgun` and open `http://localhost:9393` in your browser
 * You're done, get cranking!
 
+### Running on JRuby
+Since shotgun doesn't run on jruby, we use Sinatra Reloading:
+
+* Head over to the directory where you installed commonplace, if you're not there already
+* `rackup config.ru` to run commonplace
+* Open `http://localhost:9292` in your browser
+* You're done, get cranking!
+
 ### Running on Windows
 
 Since shotgun doesn't run on windows, you need to install Thin instead. Here's what you do:

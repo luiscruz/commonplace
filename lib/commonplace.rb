@@ -1,6 +1,7 @@
 #encoding: UTF-8
 
 require 'rubygems'
+require 'markdown'
 require 'find'
 
 require_relative 'page'
@@ -132,7 +133,3 @@ class Commonplace
 		return page(permalink)
 	end
 end
-
-
-
-

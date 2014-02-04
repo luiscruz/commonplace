@@ -12,7 +12,7 @@ class Page
 	
 	# return html for markdown formatted page content
 	def content
-		return Redcarpet.new(parse_links(@content)).to_html
+		return Markdown.new(parse_links(@content)).to_html
 	end
 	
 	# return raw page content

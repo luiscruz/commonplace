@@ -24,8 +24,17 @@ class CommonplaceServer < Sinatra::Base
     end
   end
   
-	configure do 
-		config = YAML::load(File.open("config/commonplace.yml"))
+  # jruby replacement for shotgun
+  if defined?( JRUBY_VERSION )
+    configure :development do
+      require 'sinatra/reloader'
+      register Sinatra::Reloader
+      also_reload "./lib/*.rb"
+    end
+  end
+  
+  configure do
+    config = YAML::load(File.open("config/commonplace.yml"))
 		set :sitename, config['sitename']
 		set :dir, config['wikidir']
 		set :readonly, config['readonly']
