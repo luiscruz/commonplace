@@ -1,4 +1,9 @@
 class FileSystemAbstract
+  
+  def new_file(path, content)
+    raise 'unimplemented method'
+  end
+  
   def get_file_content(path)
     raise 'unimplemented method'
   end

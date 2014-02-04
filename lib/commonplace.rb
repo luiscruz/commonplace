@@ -115,7 +115,6 @@ class Commonplace
 			# check if we can read content, return nil if not
 			content = self.file_system.get_file_content(permalink+'.md')
 			return nil if content.nil?
-			
 			# return a new Page instance
 			return Page.new(content, permalink, self)
 		end
@@ -127,10 +126,7 @@ class Commonplace
 		# FIXME - if the file exists, this should bail out
 		
 		# write the contents into the file
-		file = dir + '/' + permalink + '.md'
-		f = File.new(file, "w")
-		f.write(content)
-		f.close
+		self.file_system.new_file(permalink+'.md', content)
 		
 		# return the new file
 		return page(permalink)

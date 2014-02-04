@@ -15,6 +15,11 @@ class FileSystemLocal < FileSystemAbstract
     return instance if instance.is_root_valid?
   end
   
+  def new_file(path, content)
+    f = File.new(get_absolute_path(path), "w")
+		f.write(content)
+		f.close
+  end
   
   def get_file_content(path)
     File.new(get_absolute_path(path), :encoding => "UTF-8").read
