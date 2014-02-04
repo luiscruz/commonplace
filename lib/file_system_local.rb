@@ -21,6 +21,10 @@ class FileSystemLocal < FileSystemAbstract
 		f.close
   end
   
+  def mkdir(path)
+    FileUtils.mkdir_p get_absolute_path(path)
+  end
+  
   def get_file_content(path)
     File.new(get_absolute_path(path), :encoding => "UTF-8").read
   end

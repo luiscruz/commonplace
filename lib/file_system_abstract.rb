@@ -4,6 +4,10 @@ class FileSystemAbstract
     raise 'unimplemented method'
   end
   
+  def mkdir(path)
+    raise 'unimplemented method'
+  end
+  
   def get_file_content(path)
     raise 'unimplemented method'
   end

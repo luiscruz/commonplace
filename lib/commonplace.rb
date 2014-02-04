@@ -125,7 +125,15 @@ class Commonplace
 	# create a new page and return it when done
 	def save(permalink, content)
 		# FIXME - if the file exists, this should bail out
-		
+
+		# always strip leading / from filename
+		permalink.slice!(0) if permalink.start_with?( '/' )
+
+
+    # create file path recursively
+		path = Pathname.new( permalink ).dirname
+		self.file_system.mkdir(path)
+
 		# write the contents into the file
 		self.file_system.new_file(permalink+'.md', content)
 		
