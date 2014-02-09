@@ -4,35 +4,51 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="/css/screen.css">	
+	<link rel="stylesheet" href="/css/bootstrap.css">	
 </head>
 <body>
 	<section id="content">
-		<article id="page">
-			<h1 class="title"><%= '<a href="/">Home</a> &gt; ' if @name != "Home" %><%= @name %></h1>
+		<div id="page" class="page-header">
+			<h1 class="container"><%= '<a href="/">Home</a> &gt; ' if @name != "Home" %><%= @name %></h1>
 			<% if @alert %>
-				<div class="alert-message error"><%= @alert %></div>
+				<div class="alert alert-danger"><%= @alert %></div>
 			<% end %>
-					
-			<%= yield %>
-		</article>
+	</div>	
+  <div class="container">
+    <div class="well">
+			<%= yield %>      
+    </div>
+    
 				
 		<% if !@error %>
-			<nav class="tools">
-				<a href="/" class="btn small <%= "disabled" if @name == "Home" %>">&lt; Home</a>
-				<a href="/list" class="btn small <%= "disabled" if @name == "Known pages" %>">Page list</a>
+      <nav class="btn-toolbar pull-right" role="toolbar">
+        <div class="btn-group">
+           <a href="/" class="btn btn-default <%= "disabled" if @name == "Home" %>">&lt; Home</a>
+           <a href="/list" class="btn btn-default <%= "disabled" if @name == "Known pages" %>">Page list</a>
+
 				<% if @page && !@editing && !settings.readonly %>
-					<a href="/p/new" class="btn small">New page</a>
-					<a href="/p/<%= @page.permalink %>/edit" class="btn small primary">Edit this</a>
+					<a href="/p/new" class="btn btn-default">New page</a>
+					<a href="/p/<%= @page.permalink %>/edit" class="btn btn-primary">Edit this</a>
 				<% elsif @newpage %>
 					<a href="/p/new/<%= @newpage %>" class="btn small primary">Create <%= @wiki.file_to_pagename(@newpage) %></a>
 				<% end %>
+        </div>
 			</nav>
 		<% end %>
+    </div>
 	</section>
 		
-	<footer>
-		Powered by <a href="https://github.com/fredoliveira/commonplace">Commonplace</a>, designed and developed by <a href="http://helloform.com">Fred Oliveira</a>. Source code and updates are <a href="https://github.com/fredoliveira/commonplace">on Github</a>.
+  <footer>
+    <br/>
+  <div class="navbar navbar-default">
+    <small class="navbar-text"> 
+      Maintained by <a href="http://luiscruz.pt.vu/" class="">Luis Cruz</a>.  MIT License.
+    </small>
+    <small class="navbar-text navbar-right"> 
+      Source code available at
+      <a class="" href="https://github.com/luiscruz/cp_usability_evaluation/" target="_blank">Github</a>.&nbsp;&nbsp;
+    </small>
+  </div>
 	</footer>
 </body>
 </html>
