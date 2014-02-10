@@ -9,18 +9,20 @@ class CommonplaceServer < Sinatra::Base
   helpers do
     def render_directory_list(directory_meta, nested_already=false)
       html_string = ""
-      html_string << "<li class=\"list-group-item directory\">" if nested_already
-      html_string << "<a href=\"/#{directory_meta[:link]}\">#{directory_meta[:title]}</a>"
-      html_string << "</li>" if nested_already
-      html_string << "<ul class=\"list-group\">"
+      html_string << "<div class=\"tree well\"><ul> <li>" unless nested_already
+      html_string << "<span class=\"node\"><span class=\"glyphicon glyphicon-folder-close\"></span><a href=\"/#{directory_meta[:link]}\">#{directory_meta[:title]}</a></span>"
+            html_string << "<ul>"
       directory_meta[:files].each do |page|
         if page[:dir]
-          html_string << render_directory_list(page, true)
+          html_string << "<li>"+render_directory_list(page, true)+"</li>"
         else
-          html_string << "<li class=\"list-group-item\"><a href=\"/#{page[:link]}\">#{page[:title]}</a></li>"
+          html_string << "<li><span class=\"node\"><a href=\"/#{page[:link]}\">#{page[:title]}</a></span></li>"
         end
       end
       html_string << "</ul>"
+      html_string << "</div></ul></li>" unless nested_already
+      
+      return html_string
     end
   end
   
