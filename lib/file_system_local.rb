@@ -37,8 +37,21 @@ class FileSystemLocal < FileSystemAbstract
     File.directory? get_absolute_path(path)
   end
   
-  def is_file?(path)
+  def is_file?(path, extension = nil)
+    if extension
+      filename  = File.basename(path)
+      dirpath = File.dirname(path)
+      path = File.join(dirpath, "#{filename}.#{extension}")
+    end
     File.file? get_absolute_path(path)
+  end
+  
+  def is_markdown?(path)
+    is_file?(path, 'md')
+  end
+  
+  def is_pdf?(path)
+    is_file?(path, 'pdf')
   end
   
   def get_absolute_path(path)

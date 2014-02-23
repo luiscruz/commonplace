@@ -23,4 +23,13 @@ class FileSystemAbstract
   def is_file?(path)
     raise 'unimplemented method'
   end
+  
+  #path has file without extension
+  def is_markdown?(path)
+    raise 'unimplemented method'
+  end
+  
+  def is_pdf?(path)
+    raise 'unimplemented method'
+  end
 end

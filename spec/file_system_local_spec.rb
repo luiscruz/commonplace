@@ -26,4 +26,13 @@ describe FileSystemLocal do
     FileSystemLocal.new("dir1/dir2/apage.md").should be_nil
   end
   
+  it 'should identify markdown files' do
+    @file_system.is_markdown?("dir1/dir2/apage").should be_true
+    @file_system.is_pdf?("dir1/dir2/apage").should be_false
+  end
+  
+  it 'should identify pdf files' do
+    @file_system.is_pdf?("dir1/dir2/apdf").should be_true
+    @file_system.is_markdown?("dir1/dir2/apdf").should be_false
+  end
 end

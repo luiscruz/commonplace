@@ -5,6 +5,7 @@ require 'markdown'
 require 'find'
 
 require_relative 'page'
+require_relative 'page_pdf'
 require_relative 'folder'
 require_relative 'file_system_local'
 
@@ -112,12 +113,14 @@ class Commonplace
 		# check if this is a directory path
 		if self.file_system.is_directory?(permalink)
 			return Folder.new(permalink, self)
-		elsif self.file_system.is_file? permalink+'.md'
+		elsif self.file_system.is_markdown? permalink
 			# check if we can read content, return nil if not
 			content = self.file_system.get_file_content(permalink+'.md')
 			return nil if content.nil?
 			# return a new Page instance
 			return Page.new(content, permalink, self)
+    elsif self.file_system.is_pdf?(permalink)
+      return PagePdf.new(permalink, self)
 		end
 		nil
 	end
