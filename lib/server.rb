@@ -57,7 +57,7 @@ class CommonplaceServer < Sinatra::Base
 	
 	# show the homepage
 	get '/' do
-		show('home')
+		show('_home', true)
 	end
 	
 	# show the known page list
@@ -131,7 +131,7 @@ class CommonplaceServer < Sinatra::Base
 	end
 
 	# returns a given page (or file) inside our repository
-	def show(name)
+	def show(name, show_list_if_page_not_found=false)
 		if !@wiki.valid?
 			status 500
 			@name = "Wiki directory not found"
@@ -143,6 +143,8 @@ class CommonplaceServer < Sinatra::Base
 				@name = @page.name
 				@content = @page.content
 				erb :show
+      elsif show_list_if_page_not_found
+        redirect '/list'
 			else
 				status 404
 				@newpage = name

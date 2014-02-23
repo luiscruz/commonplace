@@ -90,7 +90,7 @@ describe CommonplaceServer do
 	end
 	
 	it "renders an existing page successfully" do
-		get '/home'
+		get '/_home'
 		last_response.should be_ok
 	end
 	
@@ -101,7 +101,7 @@ describe CommonplaceServer do
 	end
 
 	it "renders the edit page for an existing page successfully" do
-		get '/p/home/edit'
+		get '/p/_home/edit'
 		last_response.should be_ok
 	end
 

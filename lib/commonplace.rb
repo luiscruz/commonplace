@@ -65,11 +65,10 @@ class Commonplace
     directory_entry[:files] = files_paths.map! do |entry|
       if entry.class == String
 			  if self.file_system.is_file? entry
-          link = entry.chomp(".md")
-          link[0] = '' if link[0] == '/'
-          link = entry.chomp(".pdf")
-          link[0] = '' if link[0] == '/'
-          #FIXME
+          filename  = File.basename(entry,".*")
+          dirname = File.dirname(entry)
+          link = File.join(dirname, filename )
+          link[0] = '' if link[0] == '/' #FIXME
 				  {:dir => false, :title => file_to_pagename(entry), :link => link}
 			  end
       elsif entry.class == Array

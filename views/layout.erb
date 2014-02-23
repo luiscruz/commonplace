@@ -30,7 +30,7 @@
 		<% if !@error %>
       <nav class="btn-toolbar pull-right" role="toolbar">
         <div class="btn-group">
-           <a href="/" class="btn btn-default <%= "disabled" if @name == "Home" %>">&lt; Home</a>
+           <a href="/" class="btn btn-default <%= "disabled" if @name == "Home" %>">Home</a>
            <a href="/list" class="btn btn-default <%= "disabled" if @name == "Known pages" %>">Page list</a>
 
 				<% if @page && !@editing && !settings.readonly %>
