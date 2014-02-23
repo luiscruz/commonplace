@@ -38,7 +38,7 @@ class Commonplace
 		
 		dirs = entries.select { |e| file_system.is_directory? "#{base_permalink}/#{e}" }
 		files = entries.select { |e| file_system.is_file? "#{base_permalink}/#{e}" }
-		files.reject! {|e| !e.end_with? '.md'}
+		files.reject! {|e| !(e.end_with?('.md') || e.end_with?('.pdf'))}
 		files.map! do |e| 
 			File.join(base_permalink, e)
 		end
@@ -67,6 +67,9 @@ class Commonplace
 			  if self.file_system.is_file? entry
           link = entry.chomp(".md")
           link[0] = '' if link[0] == '/'
+          link = entry.chomp(".pdf")
+          link[0] = '' if link[0] == '/'
+          #FIXME
 				  {:dir => false, :title => file_to_pagename(entry), :link => link}
 			  end
       elsif entry.class == Array
@@ -105,7 +108,7 @@ class Commonplace
 	
 	# converts a filename into a page title
 	def file_to_pagename(filename)
-		filename.split('/').last.chomp(".md").gsub('_', ' ').capitalize
+		File.basename(filename, '.*').gsub('_', ' ').capitalize
 	end
 		
 	# returns a page instance for a given filename
