@@ -1,8 +1,6 @@
 <form action="/p/<%= @page.permalink %>/edit" method="post" role="form">
   <div class="form-group">
 	<label for="content">Page content</label>
-	<textarea id="content" class="form-control" rows="15" name="content"><%= @page.raw %></textarea>		
+	<textarea id="content" class="form-control markdown_editor" rows="15" name="content"><%= @page.raw %></textarea>		
   </div>
-	<button type="submit" class="btn btn-primary btn-sm pull-right">Save page</button>
-  <div class="clearfix"></div>
 </form>
