@@ -2,6 +2,8 @@ source "http://rubygems.org"
 gem "rack"
 gem "sinatra", ">=1.3"
 gem "markdown"
+gem "sinatra-contrib"
+
 platforms :ruby do
   gem "redcarpet", "1.17.2"
   gem "shotgun"
@@ -9,7 +11,6 @@ platforms :ruby do
 end
 platforms :jruby do
   gem "kramdown"
-  gem "sinatra-contrib"
   gem "therubyrhino"
 end
 gem "rspec"

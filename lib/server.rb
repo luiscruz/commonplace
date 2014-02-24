@@ -1,11 +1,13 @@
 require './lib/commonplace'
 require 'rubygems'
 require 'sinatra'
+require "sinatra/content_for"
 require 'erb'
 require 'yaml'
 
 class CommonplaceServer < Sinatra::Base	
   # HElpers
+  helpers Sinatra::ContentFor
   helpers do
     def render_directory_list(directory_meta, nested_already=false)
       html_string = ""
@@ -23,6 +25,23 @@ class CommonplaceServer < Sinatra::Base
       html_string << "</div></ul></li>" unless nested_already
       
       return html_string
+    end
+    
+    def render_breadcrumb(permalink)
+      files=[]
+      Pathname.new(permalink).descend{|v| files << v.to_s}
+      last_file = files.pop
+      content = <<HTML
+      <ol class="breadcrumb">
+        <li><a href="/">Home </a></li>
+HTML
+        files.each do |file|
+          content << "<li><a href=\"/#{file}\">#{Page.permalink_to_title file}</a></li> "
+        end
+        unless last_file == '_home'
+          content << "<li> #{ Page.permalink_to_title last_file} </li>"
+        end 
+      content<< "</ol>"
     end
   end
   
@@ -112,8 +131,7 @@ class CommonplaceServer < Sinatra::Base
 	end
 	
 	# get all pages inside directories
-	get '/*' do
-		page_name = params[:splat].first
+	get '/*' do |page_name|
 		show(page_name)
 	end
 
@@ -132,14 +150,15 @@ class CommonplaceServer < Sinatra::Base
 	end
 
 	# returns a given page (or file) inside our repository
-	def show(name, show_list_if_page_not_found=false)
+	def show(permalink, show_list_if_page_not_found=false)
 		if !@wiki.valid?
 			status 500
 			@name = "Wiki directory not found"
 			@error = "We couldn't find the wiki directory your configuration is pointing to.<br/>Fix that, then come back - we'll be happier then."
 			erb :error500
 		else
-			if @page = @wiki.page(name)
+      @permalink = permalink
+			if @page = @wiki.page(permalink)
 				# may success come to those who enter here.
 				@name = @page.name
 				@content = @page.content
@@ -148,7 +167,7 @@ class CommonplaceServer < Sinatra::Base
         redirect '/list'
 			else
 				status 404
-				@newpage = name
+				@newpage = permalink
 				@name = "404: Page not found"
 				erb :error404
 			end
