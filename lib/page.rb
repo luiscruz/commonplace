@@ -6,7 +6,7 @@ class Page
 	def initialize(content, permalink, wiki)
 		@content = content # the raw page content
 		@permalink = permalink
-		@name = permalink.gsub('_', ' ').capitalize
+		@name = Page.permalink_to_title(permalink)
 		@wiki = wiki
 	end
 	
