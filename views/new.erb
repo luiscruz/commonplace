@@ -1,9 +1,13 @@
-<form action="/p/save" method="post" class="form-stacked">
+<form action="/p/save" method="post" role="form">
+  <div class="form-group">
 	<label for="content">Page content</label>
-	<textarea id="content" class="xlarge" name="content"><%= @content if @content %></textarea>		
-	
+	<textarea id="content" class="form-control" rows="12" name="content"><%= @content if @content %></textarea>		
+	</div>
+  <div class="form-group">
 	<label for="name">Document name</label>
-	<input type="text" name="filename" id="filename" placeholder="Page name" <%= "value=\"#{@newpagename}\"" if @newpagename %> />
-	
-	<input type="submit" value="Save page" class="btn primary small">
+	<input type="text" class="form-control" name="filename" id="filename" placeholder="Page name" <%= "value=\"#{@new_page_permalink}\"" if @new_page_permalink %> />
+	</div>
+	<button type="submit" class="btn btn-primary btn-sm pull-right">Save page</button>
+  <div class="clearfix"></div>
+  
 </form>

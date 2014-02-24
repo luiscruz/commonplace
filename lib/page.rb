@@ -34,4 +34,16 @@ class Page
 			end
 		end.to_s
 	end	
+  
+	# converts a pagename into the permalink form
+	def self.title_to_permalink(pagename)
+		pagename.gsub(" ", "_").downcase
+	end
+	
+	# converts a permalink to the full page name
+	def self.permalink_to_title(permalink)
+    filename = File.basename(permalink)
+    filename[0] = '' if filename[0] ==  '_' 
+		filename.gsub('_', ' ').capitalize
+	end
 end

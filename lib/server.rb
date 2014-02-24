@@ -103,8 +103,9 @@ class CommonplaceServer < Sinatra::Base
 	end
 	
 	# create a new page
-	get '/p/new/:pagename' do
-		@newpagename = @wiki.get_pagename(params[:pagename])
+	get '/p/new/*' do |new_page_permalink|
+    @new_page_permalink = new_page_permalink
+		@newpagename = Page.permalink_to_title(new_page_permalink)
 		@name = "Creating #{@newpagename}"
 		@editing = true
 		erb :new

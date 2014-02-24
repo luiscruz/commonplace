@@ -61,12 +61,17 @@ describe Commonplace do
 	end
 	
 	it "should convert pages to files and back" do
-		fwd = @w.get_permalink("This is a test page name")
+		fwd = Page.title_to_permalink("This is a test page name")
 		fwd.should == "this_is_a_test_page_name"
-		rev = @w.get_pagename(fwd)
+		rev = Page.permalink_to_title(fwd)
 		rev.should == "This is a test page name"
-		@w.get_filename("This is a test page name").should == "this_is_a_test_page_name.md"
 	end
+  
+  it "should convert permalink with dirs to title" do
+    permalink = "dir1/dir2/file_name"
+    title = Page.permalink_to_title "dir1/dir2/file_name"
+    title.should == "File name"
+  end
 	
 	it "should look for links in double square brackets and create anchor tags" do
 		@w.page('linktest').content.should == "<p><a class=\"internal\" href=\"/test\">Test</a></p>\n"

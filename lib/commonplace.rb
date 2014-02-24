@@ -90,21 +90,6 @@ class Commonplace
 		{:dir => true, :title => title, :link => splits.join('/')}
 	end
 	
-	# converts a pagename into the permalink form
-	def get_permalink(pagename)
-		pagename.gsub(" ", "_").downcase
-	end
-	
-	# converts a permalink to the full page name
-	def get_pagename(permalink)
-		permalink.gsub('_', ' ').capitalize
-	end
-	
-	# converts a pagename into the full filename
-	def get_filename(pagename)
-		get_permalink(pagename) + ".md"
-	end
-	
 	# converts a filename into a page title
 	def file_to_pagename(filename)
 		File.basename(filename, '.*').gsub('_', ' ').capitalize
