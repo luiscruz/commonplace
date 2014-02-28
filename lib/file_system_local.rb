@@ -46,14 +46,6 @@ class FileSystemLocal < FileSystemAbstract
     File.file? get_absolute_path(path)
   end
   
-  def is_markdown?(path)
-    is_file?(path, 'md')
-  end
-  
-  def is_pdf?(path)
-    is_file?(path, 'pdf')
-  end
-  
   def get_absolute_path(path)
     File.join(self.root, path)
   end

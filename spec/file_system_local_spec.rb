@@ -35,4 +35,8 @@ describe FileSystemLocal do
     @file_system.is_pdf?("dir1/dir2/apdf").should be_true
     @file_system.is_markdown?("dir1/dir2/apdf").should be_false
   end
+  
+  it 'should get directory entries properly' do
+    @file_system.get_directory_files('dir1').should include('dir2')
+  end
 end

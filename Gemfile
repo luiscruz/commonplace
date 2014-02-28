@@ -16,3 +16,4 @@ end
 gem "rspec"
 gem "rack-test"
 gem "less"
+gem "dropbox-sdk"

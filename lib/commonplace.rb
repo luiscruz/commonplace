@@ -8,6 +8,7 @@ require_relative 'page'
 require_relative 'page_pdf'
 require_relative 'folder'
 require_relative 'file_system_local'
+require_relative 'file_system_dropbox'
 
 class Commonplace
 	attr_accessor :dir
@@ -19,6 +20,8 @@ class Commonplace
     case file_system
     when 'local'
       @file_system = FileSystemLocal.new(dir)
+    when 'dropbox'
+      @file_system = FileSystemDropbox.new(dir)      
     else
       @file_system = nil
     end
