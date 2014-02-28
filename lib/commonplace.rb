@@ -16,12 +16,12 @@ class Commonplace
   attr_accessor :file_system
 	
 	# initialize our wiki class
-	def initialize(settings)
-    case settings.file_system
+	def initialize(config)
+    case config[:file_system]
     when 'local'
-      @file_system = FileSystemLocal.new(settings.dir)
+      @file_system = FileSystemLocal.new(config[:dir])
     when 'dropbox'
-      @file_system = FileSystemDropbox.new(settings.dir, settings.dropbox_access_token)      
+      @file_system = FileSystemDropbox.new(config[:dir], config[:dropbox_access_token])      
     else
       @file_system = nil
     end
@@ -29,7 +29,7 @@ class Commonplace
 	
 	# checks if our directory exists
 	def valid?
-		self.file_system != nil && self.file_system.is_root_valid?
+		self.file_system != nil
 	end
 	
 	# returns a raw list of files in our wiki directory, sans . and ..
@@ -39,27 +39,27 @@ class Commonplace
 		files_paths
 	end
 	
+  #implementar metodos file_system para obter apenas diretorios e para obter apenas ficheiros
 	def get_directory_files(base_permalink)
 		entries = self.file_system.get_directory_files(base_permalink)
 		entries.delete_if { |e| e.start_with?('.') || e.start_with?('..')}
 		
-		
-		dirs = entries.select { |e| file_system.is_directory? "#{base_permalink}/#{e}" }
-		files = entries.select { |e| file_system.is_file? "#{base_permalink}/#{e}" }
-		files.reject! {|e| !(e.end_with?('.md') || e.end_with?('.pdf'))}
-		files.map! do |e| 
-			File.join(base_permalink, e)
-		end
-    
+		dirs = []
+    files = []
+    entries.each do |entry|
+      if  file_system.is_directory? "#{base_permalink}/#{entry}"
+        dirs << entry
+      elsif entry.end_with?('.md') || entry.end_with?('.pdf')
+        files << File.join(base_permalink, entry)
+      end
+    end
     files_paths = [base_permalink] | files
-		
 		
 		if dirs
 			dirs.each do |sub_dir|
         files_paths << get_directory_files(File.join(base_permalink, sub_dir))
       end
 		end
-		
     files_paths
 	end
 	

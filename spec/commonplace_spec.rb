@@ -4,7 +4,7 @@ require 'rack/test'
 
 describe Commonplace do
 	before(:each) do
-		@w = Commonplace.new('local', 'spec/testwiki')
+		@w = Commonplace.new(file_system: 'local', dir: 'spec/testwiki')
 	end
 		
 	it "check returns true for an existing directory" do
@@ -12,20 +12,24 @@ describe Commonplace do
 	end
 	
 	it "check returns false for a non-existing directory" do
-		w = Commonplace.new('local', 'spec/testdir')
+		w = Commonplace.new(file_system: 'local', dir:'spec/testdir')
 		w.valid?.should == false
 	end
 	
 	it "returns directory entry with no files for an empty directory" do
 		# create a new directory
 		Dir.mkdir('spec/testdir2')
-		w = Commonplace.new('local','spec/testdir2')
+		w = Commonplace.new(file_system: 'local', dir: 'spec/testdir2')
     print(w.list_pages)
 		w.list_pages[:files].should == []
 		
 		# remove directory
 		Dir.rmdir('spec/testdir2')
 	end
+  
+  it "should list all files paths from directories" do
+  	@w.get_directory_files('dir1/').should == ['dir1/',['dir1/dir2', 'dir1/dir2/apage.md','dir1/dir2/apdf.pdf','dir1/dir2/what.md']]
+  end
 	
 	it "should return nil when accessing a non-existing file" do
 		@w.page('testfile').should == nil
@@ -49,7 +53,7 @@ describe Commonplace do
 	end
 	
 	it "should work out of the box" do
-		w = Commonplace.new('local', "wiki")
+		w = Commonplace.new(file_system: 'local', dir: "wiki")
 		w.valid?.should == true
 		w.page('home').name.should == "Home"
 		w.page('markdown_test').name.should == "Markdown test"
