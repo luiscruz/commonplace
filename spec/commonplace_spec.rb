@@ -4,7 +4,7 @@ require 'rack/test'
 
 describe Commonplace do
 	before(:each) do
-		@w = Commonplace.new('spec/testwiki')
+		@w = Commonplace.new('local', 'spec/testwiki')
 	end
 		
 	it "check returns true for an existing directory" do
@@ -12,14 +12,14 @@ describe Commonplace do
 	end
 	
 	it "check returns false for a non-existing directory" do
-		w = Commonplace.new('spec/testdir')
+		w = Commonplace.new('local', 'spec/testdir')
 		w.valid?.should == false
 	end
 	
 	it "returns directory entry with no files for an empty directory" do
 		# create a new directory
 		Dir.mkdir('spec/testdir2')
-		w = Commonplace.new('spec/testdir2')
+		w = Commonplace.new('local','spec/testdir2')
     print(w.list_pages)
 		w.list_pages[:files].should == []
 		
@@ -49,7 +49,7 @@ describe Commonplace do
 	end
 	
 	it "should work out of the box" do
-		w = Commonplace.new("wiki")
+		w = Commonplace.new('local', "wiki")
 		w.valid?.should == true
 		w.page('home').name.should == "Home"
 		w.page('markdown_test').name.should == "Markdown test"

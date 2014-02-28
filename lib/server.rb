@@ -22,15 +22,16 @@ class CommonplaceServer < Sinatra::Base
   
   configure do
     config = YAML::load(File.open("config/commonplace.yml"))
-		set :sitename, config['sitename']
-		set :dir, config['wikidir']
-		set :readonly, config['readonly']
-   		set :public_folder, "public"
-   		set :views, "views"
-	end
+    set :sitename, config['sitename']
+    set :file_system, config['file_system'] || 'local'
+    set :dir, config['wikidir']
+    set :readonly, config['readonly']
+    set :public_folder, "public"
+    set :views, "views"
+  end
 
 	before do
-		@wiki = Commonplace.new(settings.dir)
+		@wiki = Commonplace.new(settings.file_system, settings.dir)
 	end
 
 	# if we've locked editing access on the config file, 

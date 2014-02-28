@@ -15,8 +15,13 @@ class Commonplace
   attr_accessor :file_system
 	
 	# initialize our wiki class
-	def initialize(dir)
-    @file_system = FileSystemLocal.new(dir)
+	def initialize(file_system, dir)
+    case file_system
+    when 'local'
+      @file_system = FileSystemLocal.new(dir)
+    else
+      @file_system = nil
+    end
 	end
 	
 	# checks if our directory exists
