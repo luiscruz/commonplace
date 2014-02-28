@@ -7,6 +7,7 @@ require 'yaml'
 require_relative 'helpers'
 
 class CommonplaceServer < Sinatra::Base	
+  
   # HElpers
   helpers Sinatra::ContentFor
   helpers Helpers
@@ -20,6 +21,7 @@ class CommonplaceServer < Sinatra::Base
     end
   end
   
+  # Read configuration file
   configure do
     config = YAML::load(File.open("config/commonplace.yml"))
     set :sitename, config['sitename']
@@ -30,9 +32,14 @@ class CommonplaceServer < Sinatra::Base
     set :views, "views"
   end
 
-	before do
-		@wiki = Commonplace.new(settings.file_system, settings.dir)
+  # Create Wiki
+	configure do
+    set :wiki, Commonplace.new(settings.file_system, settings.dir)
 	end
+  
+  before do
+    @wiki ||= settings.wiki
+  end
 
 	# if we've locked editing access on the config file, 
 	# every method that edits, saves redirects to root
