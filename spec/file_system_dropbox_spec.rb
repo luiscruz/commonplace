@@ -1,10 +1,12 @@
 require_relative File.join('../lib', 'file_system_dropbox')
 require 'rack/test'
+require 'fake_dropbox'
 
 describe FileSystemDropbox do
+  fake_dropbox = FakeDropbox::Glue.new('fake_dropbox')
   
 	before(:each) do
-		@file_system = FileSystemDropbox.new('/testwiki')
+		@file_system = FileSystemDropbox.new('/testwiki', 'fake_access_token')
 	end
   
   it 'should retrieve content of a file' do
@@ -23,7 +25,7 @@ describe FileSystemDropbox do
   end
   
   it 'should not accept invalid directories for root' do
-    FileSystemDropbox.new("dir1/dir2/apage.md").should be_nil
+    FileSystemDropbox.new("dir1/dir2/apage.md", '').should be_nil
   end
   
   it 'should identify markdown files' do

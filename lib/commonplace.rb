@@ -16,12 +16,12 @@ class Commonplace
   attr_accessor :file_system
 	
 	# initialize our wiki class
-	def initialize(file_system, dir)
-    case file_system
+	def initialize(settings)
+    case settings.file_system
     when 'local'
-      @file_system = FileSystemLocal.new(dir)
+      @file_system = FileSystemLocal.new(settings.dir)
     when 'dropbox'
-      @file_system = FileSystemDropbox.new(dir)      
+      @file_system = FileSystemDropbox.new(settings.dir, settings.dropbox_access_token)      
     else
       @file_system = nil
     end
@@ -29,7 +29,7 @@ class Commonplace
 	
 	# checks if our directory exists
 	def valid?
-		self.file_system != nil
+		self.file_system != nil && self.file_system.is_root_valid?
 	end
 	
 	# returns a raw list of files in our wiki directory, sans . and ..

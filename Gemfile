@@ -17,3 +17,5 @@ gem "rspec"
 gem "rack-test"
 gem "less"
 gem "dropbox-sdk"
+#test only
+gem 'fake_dropbox'

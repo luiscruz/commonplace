@@ -5,19 +5,15 @@ require_relative 'file_system_abstract'
 class FileSystemDropbox < FileSystemAbstract
   attr_accessor :root, :client
   
-  APP_KEY = 'mik9ymck8fy6797'
-  APP_SECRET = 'glf280onty1il32'
-  
-  #FIXME:
-  ACCESS_TOKEN = 'M8GMafCxPoYAAAAAAAAAAWmihV9mJ3zAYbhhBBTepVm9aNME0UKlK_LFUmuijbVs'
-  USER_ID = '1656128'
-  
-  def initialize(root)
-    @client = DropboxClient.new(ACCESS_TOKEN)
+  # APP_KEY = 'mik9ymck8fy6797'
+  # APP_SECRET = 'glf280onty1il32'
+
+  def initialize(root, access_token)
+    @client = DropboxClient.new(access_token)
     @root = root
   end
   
-  def self.new(root)
+  def self.new(root, access_token)
     instance = super
     return instance if instance.is_root_valid?
   end
@@ -34,7 +30,7 @@ class FileSystemDropbox < FileSystemAbstract
   
   def get_file_content(path)
     absolute_path = get_absolute_path(path)
-    content, metadata = client.get_file_and_metadata(absolute_path)
+    content = client.get_file(absolute_path)
     return content
   end
   

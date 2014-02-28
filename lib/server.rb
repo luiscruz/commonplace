@@ -26,6 +26,7 @@ class CommonplaceServer < Sinatra::Base
     config = YAML::load(File.open("config/commonplace.yml"))
     set :sitename, config['sitename']
     set :file_system, config['file_system'] || 'local'
+    set :dropbox_access_token, config['dropbox_access_token']
     set :dir, config['wikidir']
     set :readonly, config['readonly']
     set :public_folder, "public"
@@ -34,7 +35,7 @@ class CommonplaceServer < Sinatra::Base
 
   # Create Wiki
 	configure do
-    set :wiki, Commonplace.new(settings.file_system, settings.dir)
+    set :wiki, Commonplace.new(settings)
 	end
   
   before do
