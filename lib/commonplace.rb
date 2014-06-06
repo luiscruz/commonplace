@@ -9,6 +9,7 @@ require_relative 'page_pdf'
 require_relative 'folder'
 require_relative 'file_system_local'
 require_relative 'file_system_dropbox'
+require_relative 'file_system_dropbox_old'
 
 class Commonplace
 	attr_accessor :dir
@@ -21,7 +22,9 @@ class Commonplace
     when 'local'
       @file_system = FileSystemLocal.new(config[:dir])
     when 'dropbox'
-      @file_system = FileSystemDropbox.new(config[:dir], config[:dropbox_access_token])      
+      @file_system = FileSystemDropbox.new(config[:dir], config[:dropbox_access_token])  
+    when 'dropbox_old'
+      @file_system = FileSystemDropboxOld.new(config[:dir], config[:dropbox_access_token])        
     else
       @file_system = nil
     end
@@ -41,7 +44,7 @@ class Commonplace
 	
   #implementar metodos file_system para obter apenas diretorios e para obter apenas ficheiros
 	def get_directory_files(base_permalink)
-		entries = self.file_system.get_directory_files(base_permalink)
+		entries = self.file_system.get_entries(base_permalink)
 		entries.delete_if { |e| e.start_with?('.') || e.start_with?('..')}
 		
 		dirs = []

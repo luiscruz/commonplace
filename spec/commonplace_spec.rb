@@ -55,7 +55,7 @@ describe Commonplace do
 	it "should work out of the box" do
 		w = Commonplace.new(file_system: 'local', dir: "wiki")
 		w.valid?.should == true
-		w.page('home').name.should == "Home"
+		w.page('_home').name.should == "Home"
 		w.page('markdown_test').name.should == "Markdown test"
 	end
 	
@@ -90,9 +90,12 @@ describe CommonplaceServer do
 	include Rack::Test::Methods
 	
 	def app
-		CommonplaceServer
+    @server ||= CommonplaceServer.new!
+    @server.settings.stub(:readonly){false}
+    @server
 	end
 	
+  
 	it "renders the homepage successfully" do
 		get '/'
 		last_response.should be_ok
@@ -133,5 +136,11 @@ describe CommonplaceServer do
 	it "renders the new page for a specific page successfully" do
 		get '/p/new/anonexistingpagehopefully'
 		last_response.should be_ok
+	end
+  
+	it "renders an info page when configuration has an invalid wikidir" do
+    @w = Commonplace.new(file_system: 'dropbox', dir: 'non_existing_directory')
+		get '/'
+		last_response.status.should_be 500
 	end
 end

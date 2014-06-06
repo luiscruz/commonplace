@@ -7,7 +7,7 @@ require 'yaml'
 require_relative 'helpers'
 
 class CommonplaceServer < Sinatra::Base	
-  
+  CONFIG_FILE = "config/commonplace.yml"
   # HElpers
   helpers Sinatra::ContentFor
   helpers Helpers
@@ -23,7 +23,7 @@ class CommonplaceServer < Sinatra::Base
   
   # Read configuration file
   configure do
-    config = YAML::load(File.open("config/commonplace.yml"))
+    config = YAML::load(File.open(CONFIG_FILE))
     set :config, {
       file_system: config['file_system'] || 'local',
       dropbox_access_token: config['dropbox_access_token'],
@@ -42,6 +42,10 @@ class CommonplaceServer < Sinatra::Base
   
   before do
     @wiki ||= settings.wiki
+    
+		if !@wiki.valid? && !request.path.split('/').include?('wiki_not_valid')
+      redirect '/wiki_not_valid'
+    end
   end
 
 	# if we've locked editing access on the config file, 
@@ -62,7 +66,15 @@ class CommonplaceServer < Sinatra::Base
 		@pages = @wiki.list_pages
 		erb :list
 	end
-
+  
+  # when wiki is not valid show error page
+  get '/wiki_not_valid' do 
+		status 500
+		@name = "Wiki directory not found"
+		@error = "We couldn't find the wiki directory your configuration is pointing to.<br/>Fix that, then come back - we'll be happier then."
+		erb :error500
+  end
+  
 	# show everything else
 	get '/:page/raw' do
 		@page = @wiki.page(params[:page])
@@ -111,7 +123,7 @@ class CommonplaceServer < Sinatra::Base
 	get '/*' do |page_name|
 		show(page_name)
 	end
-
+  
 	# save the new page
 	post '/p/save' do
 		if params[:filename] && params[:filename] != ""
@@ -128,12 +140,6 @@ class CommonplaceServer < Sinatra::Base
 
 	# returns a given page (or file) inside our repository
 	def show(permalink, show_list_if_page_not_found=false)
-		if !@wiki.valid?
-			status 500
-			@name = "Wiki directory not found"
-			@error = "We couldn't find the wiki directory your configuration is pointing to.<br/>Fix that, then come back - we'll be happier then."
-			erb :error500
-		else
       @permalink = permalink
 			if @page = @wiki.page(permalink)
 				# may success come to those who enter here.
@@ -148,6 +154,5 @@ class CommonplaceServer < Sinatra::Base
 				@name = "404: Page not found"
 				erb :error404
 			end
-		end
 	end
 end
