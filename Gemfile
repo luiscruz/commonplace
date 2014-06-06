@@ -19,3 +19,7 @@ gem "less"
 gem "dropbox-sdk"
 #test only
 gem 'fake_dropbox'
+
+#debug
+gem "pry"
+gem "pry-remote"
