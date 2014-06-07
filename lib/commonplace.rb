@@ -10,6 +10,7 @@ require_relative 'folder'
 require_relative 'file_system_local'
 require_relative 'file_system_dropbox'
 require_relative 'file_system_dropbox_old'
+require_relative 'file_system_cache'
 
 class Commonplace
 	attr_accessor :dir
@@ -27,6 +28,11 @@ class Commonplace
       @file_system = FileSystemDropboxOld.new(config[:dir], config[:dropbox_access_token])        
     else
       @file_system = nil
+    end
+    
+    use_cache = true
+    if use_cache && @file_system
+      @file_system = FileSystemCache.new(@file_system) 
     end
 	end
 	
@@ -110,7 +116,7 @@ class Commonplace
 	def page(permalink)
 		# check if this is a directory path
 		if self.file_system.is_directory?(permalink)
-			return Folder.new(permalink, self)
+			return Folder.new(permalink, self.file_system)
 		elsif self.file_system.is_markdown? permalink
 			# check if we can read content, return nil if not
 			content = self.file_system.get_file_content(permalink+'.md')

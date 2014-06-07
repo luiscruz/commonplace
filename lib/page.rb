@@ -1,7 +1,7 @@
 require 'redcarpet'
 
 class Page
-	attr_accessor :name, :permalink
+	attr_accessor :name, :content, :permalink, :html_content
 	
 	def initialize(content, permalink, wiki)
 		@content = content # the raw page content
@@ -12,13 +12,18 @@ class Page
 	
 	# return html for markdown formatted page content
 	def content
-		return Markdown.new(parse_links(@content)).to_html
+		@html_content ||=  Markdown.new(parse_links(@content)).to_html
 	end
 	
 	# return raw page content
 	def raw
 		return @content
 	end
+  
+  def refresh
+    #file_system: ask for new content
+    @html_content = nil
+  end
 	
 	# looks for links in a page's content and changes them into anchor tags
 	def parse_links(content)

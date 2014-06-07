@@ -137,10 +137,4 @@ describe CommonplaceServer do
 		get '/p/new/anonexistingpagehopefully'
 		last_response.should be_ok
 	end
-  
-	it "renders an info page when configuration has an invalid wikidir" do
-    @w = Commonplace.new(file_system: 'dropbox', dir: 'non_existing_directory')
-		get '/'
-		last_response.status.should_be 500
-	end
 end

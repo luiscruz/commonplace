@@ -17,6 +17,11 @@ gem "rspec"
 gem "rack-test"
 gem "less"
 gem "dropbox-sdk"
+
+#memory cache
+gem 'moneta'
+gem 'memcached'
+
 #test only
 gem 'fake_dropbox'
 

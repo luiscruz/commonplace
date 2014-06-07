@@ -26,7 +26,9 @@ GEM
       kramdown (>= 1.0.2)
       props (>= 1.0.0)
       textutils (>= 0.6.4)
+    memcached (1.8.0)
     method_source (0.8.2)
+    moneta (0.7.20)
     multi_json (1.8.4)
     props (1.0.3)
     pry (0.9.12.6)
@@ -85,6 +87,8 @@ DEPENDENCIES
   kramdown
   less
   markdown
+  memcached
+  moneta
   pry
   pry-remote
   rack

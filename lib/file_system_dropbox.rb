@@ -29,6 +29,7 @@ class FileSystemDropbox < FileSystemAbstract
   end
   
   def get_file_content(path)
+    puts 'dropbox refreshing file content: '+path
     absolute_path = get_absolute_path(path)
     content = client.get_file(absolute_path)
     return content

@@ -1,0 +1,5 @@
+sitename: "Luis Cruz's PhD Wiki"
+file_system: dropbox
+dropbox_access_token: 'M8GMafCxPoYAAAAAAAAAAWmihV9mJ3zAYbhhBBTepVm9aNME0UKlK_LFUmuijbVs'
+wikidir: "testwiki"
+readonly: false

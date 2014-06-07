@@ -69,6 +69,7 @@ class CommonplaceServer < Sinatra::Base
   
   # when wiki is not valid show error page
   get '/wiki_not_valid' do 
+    p'ko'
 		status 500
 		@name = "Wiki directory not found"
 		@error = "We couldn't find the wiki directory your configuration is pointing to.<br/>Fix that, then come back - we'll be happier then."
